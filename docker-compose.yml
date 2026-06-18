@@ -1,0 +1,18 @@
+services:
+  django:
+    build: ./app
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./logs:/logs
+
+  fluent-bit:
+    image: fluent/fluent-bit:3.2
+    command: ["-c", "/fluent-bit/etc/fluent-bit.yaml"]
+    volumes:
+      - ./fluent-bit/fluent-bit.yaml:/fluent-bit/etc/fluent-bit.yaml
+      - ./logs:/logs
+    depends_on:
+      - django
+
+

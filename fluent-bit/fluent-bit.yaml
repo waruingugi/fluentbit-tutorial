@@ -4,11 +4,12 @@ service:
 
 pipeline:
   inputs:
-    - name: dummy
-      tag: demo.hello
-      dummy: '{"message": "hello from fluent bit"}'
+    - name: tail
+      path: /logs/django.log
+      tag: django.app
+      read_from_head: true
 
   outputs:
     - name: stdout
-      match: 'demo.*'
+      match: 'django.*'
       format: json_lines
