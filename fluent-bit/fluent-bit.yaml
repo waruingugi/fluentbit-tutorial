@@ -1,0 +1,14 @@
+service:
+  flush: 1
+  log_level: info
+
+pipeline:
+  inputs:
+    - name: dummy
+      tag: demo.hello
+      dummy: '{"message": "hello from fluent bit"}'
+
+  outputs:
+    - name: stdout
+      match: 'demo.*'
+      format: json_lines

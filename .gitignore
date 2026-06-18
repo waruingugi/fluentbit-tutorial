@@ -1,0 +1,167 @@
+# ------------------------------------------------------------------
+# Django / Python .gitignore
+# Created by https://www.toptal.com/developers/gitignore/api/django
+# ------------------------------------------------------------------
+
+### Django ###
+*.log
+*.pot
+*.pyc
+__pycache__/
+db.sqlite3
+db.sqlite3-journal
+media/
+dump.rdb
+.DS_Store
+
+# Django collectstatic output
+staticfiles/
+
+### Python bytecode / caches ###
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Docker
+docker/docker-compose.local.yml
+
+### Distribution / packaging ###
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+### PyInstaller ###
+*.manifest
+*.spec
+
+### Installer logs ###
+pip-log.txt
+pip-delete-this-directory.txt
+
+### Unit test / coverage ###
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+cover/
+
+### Translations ###
+*.mo
+
+### Flask ###
+instance/
+.webassets-cache/
+
+### Scrapy ###
+.scrapy/
+
+### Sphinx ###
+docs/_build/
+
+### PyBuilder ###
+.pybuilder/
+target/
+
+### Jupyter ###
+.ipynb_checkpoints/
+
+### IPython ###
+profile_default/
+ipython_config.py
+
+### Dependency managers ###
+.pdm.toml
+__pypackages__/
+
+### Celery ###
+celerybeat-schedule
+celerybeat.pid
+
+celerybeat-schedule-shm
+celerybeat-schedule-wal
+
+
+### SageMath ###
+*.sage.py
+
+# ------------------------------------------------------------------
+# Environment files
+# env/ contains secrets; only commit env/.env.example
+# ------------------------------------------------------------------
+
+# Ignore everything in env/ except the example file
+env/*
+!env/.env.example
+.env
+
+
+# Virtual environments
+.venv/
+venv/
+env.bak/
+venv.bak/
+
+### IDEs / editors ###
+.idea/
+.spyderproject
+.spyproject
+.ropeproject
+
+### mkdocs ###
+/site/
+
+### Type checkers ###
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+.pytype/
+
+### Cython ###
+cython_debug/
+
+### Security tooling ###
+.cache_ggshield
+
+### pyenv ###
+.python-version
+
+### Claude ###
+.claude/.session
+.claude/cache/
+.claude/*.log
+.claude/settings.local.json
+.claude/statsig/
+.claude/todos/
+
+### Custom folders ###
+
+
+# ------------------------------------------------------------------
+# End of .gitignore
+# ------------------------------------------------------------------
