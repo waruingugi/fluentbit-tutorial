@@ -21,7 +21,7 @@ settings.configure(
                 "format": "%(asctime)s %(levelname)s %(name)s %(message)s",
                 "rename_fields": {"asctime": "time", "levelname": "level", "name": "logger"},
             },
-            "access": {
+            "plain": {
                 "format": "%(asctime)s %(levelname)s %(name)s %(message)s",
             },
         },
@@ -34,17 +34,24 @@ settings.configure(
             "access_file": {
                 "class": "logging.FileHandler",
                 "filename": "/logs/access.log",
-                "formatter": "access",
+                "formatter": "plain",
+            },
+            "error_file": {
+                "class": "logging.FileHandler",
+                "filename": "/logs/error.log",
+                "formatter": "plain",
             },
         },
         "loggers": {
             "app": {"handlers": ["app_file"], "level": "INFO", "propagate": False},
             "django.server": {"handlers": ["access_file"], "level": "INFO", "propagate": False},
+            "errors": {"handlers": ["error_file"], "level": "ERROR", "propagate": False},
         },
     },
 )
 
 logger = logging.getLogger("app")
+err_logger = logging.getLogger("errors")
 
 
 def index(request):
@@ -52,7 +59,18 @@ def index(request):
     return JsonResponse({"message": "hello from django"})
 
 
-urlpatterns = [path("", index)]
+def boom(request):
+    try:
+        result = 1 / 0
+    except Exception:
+        err_logger.exception("failed to handle /boom")
+    return JsonResponse({"detail": "an error was logged"}, status=500)
+
+
+urlpatterns = [
+    path("", index),
+    path("boom", boom),
+]
 
 if __name__ == "__main__":
     execute_from_command_line(sys.argv)
