@@ -16,20 +16,30 @@ settings.configure(
         "version": 1,
         "disable_existing_loggers": False,
         "formatters": {
-            "plain": {
+            "json": {
+                "()": "pythonjsonlogger.jsonlogger.JsonFormatter",
+                "format": "%(asctime)s %(levelname)s %(name)s %(message)s",
+                "rename_fields": {"asctime": "time", "levelname": "level", "name": "logger"},
+            },
+            "access": {
                 "format": "%(asctime)s %(levelname)s %(name)s %(message)s",
             },
         },
         "handlers": {
-            "file": {
+            "app_file": {
                 "class": "logging.FileHandler",
-                "filename": "/logs/django.log",
-                "formatter": "plain",
+                "filename": "/logs/app.log",
+                "formatter": "json",
+            },
+            "access_file": {
+                "class": "logging.FileHandler",
+                "filename": "/logs/access.log",
+                "formatter": "access",
             },
         },
-        "root": {
-            "handlers": ["file"],
-            "level": "INFO",
+        "loggers": {
+            "app": {"handlers": ["app_file"], "level": "INFO", "propagate": False},
+            "django.server": {"handlers": ["access_file"], "level": "INFO", "propagate": False},
         },
     },
 )

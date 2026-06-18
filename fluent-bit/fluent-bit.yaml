@@ -2,11 +2,26 @@ service:
   flush: 1
   log_level: info
 
+parsers:
+  - name: app_json
+    format: json
+
+  - name: django_access
+    format: regex
+    regex: '^(?<time>\S+ \S+) (?<level>\w+) (?<logger>[\w.]+) "(?<method>\w+) (?<path>\S+) (?<protocol>[^"]+)" (?<status>\d+) (?<size>\d+)$'
+
 pipeline:
   inputs:
     - name: tail
-      path: /logs/django.log
+      path: /logs/app.log
       tag: django.app
+      parser: app_json
+      read_from_head: true
+
+    - name: tail
+      path: /logs/access.log
+      tag: django.access
+      parser: django_access
       read_from_head: true
 
   outputs:
