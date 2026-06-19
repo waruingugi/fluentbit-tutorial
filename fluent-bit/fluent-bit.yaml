@@ -42,21 +42,21 @@ pipeline:
       read_from_head: true
 
   filters:
-    - name: modify          # 1. stamp context onto everything
+    - name: modify
       match: 'django.*'
       add:
         - service django
         - env dev
 
-    - name: grep            # 2. drop probe noise early
+    - name: grep
       match: 'django.access'
       exclude: 'path ^/health$'
 
-    - name: modify          # 3. redact secrets from app logs
+    - name: modify
       match: 'django.app'
       remove: user_email
 
-    - name: lua             # 4. derive status_class BEFORE nesting
+    - name: lua
       match: 'django.access'
       call: add_status_class
       code: |
@@ -70,7 +70,7 @@ pipeline:
             return 1, timestamp, record
         end
 
-    - name: nest            # 5. group HTTP fields last
+    - name: nest
       match: 'django.access'
       operation: nest
       wildcard:
@@ -85,3 +85,13 @@ pipeline:
     - name: stdout
       match: 'django.*'
       format: json_lines
+
+    - name: file
+      match: 'django.error'
+      path: /logs
+      file: errors.out
+
+    - name: file
+      match: 'django.*'
+      path: /logs
+      file: all.out
