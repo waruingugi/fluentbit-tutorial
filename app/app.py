@@ -55,9 +55,15 @@ err_logger = logging.getLogger("errors")
 
 
 def index(request):
-    logger.info("handled request to /")
+    logger.info(
+        "handled request to /",
+        extra={"client_ip": "203.0.113.5", "user_email": "user@example.com"},
+    )
     return JsonResponse({"message": "hello from django"})
 
+
+def health(request):
+    return JsonResponse({"status": "ok"})
 
 def boom(request):
     try:
@@ -69,6 +75,7 @@ def boom(request):
 
 urlpatterns = [
     path("", index),
+    path("health", health),
     path("boom", boom),
 ]
 

@@ -41,10 +41,47 @@ pipeline:
       multiline.parser: django_multiline
       read_from_head: true
 
+  filters:
+    - name: modify          # 1. stamp context onto everything
+      match: 'django.*'
+      add:
+        - service django
+        - env dev
+
+    - name: grep            # 2. drop probe noise early
+      match: 'django.access'
+      exclude: 'path ^/health$'
+
+    - name: modify          # 3. redact secrets from app logs
+      match: 'django.app'
+      remove: user_email
+
+    - name: lua             # 4. derive status_class BEFORE nesting
+      match: 'django.access'
+      call: add_status_class
+      code: |
+        function add_status_class(tag, timestamp, record)
+            local s = tonumber(record["status"])
+            if s == nil then return 0, timestamp, record end
+            if s >= 500 then record["status_class"] = "5xx"
+            elseif s >= 400 then record["status_class"] = "4xx"
+            elseif s >= 200 then record["status_class"] = "2xx"
+            else record["status_class"] = "other" end
+            return 1, timestamp, record
+        end
+
+    - name: nest            # 5. group HTTP fields last
+      match: 'django.access'
+      operation: nest
+      wildcard:
+        - method
+        - path
+        - protocol
+        - status
+        - size
+      nest_under: http
+
   outputs:
     - name: stdout
       match: 'django.*'
       format: json_lines
-
-
-
